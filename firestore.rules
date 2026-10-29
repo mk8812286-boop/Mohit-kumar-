@@ -1,0 +1,120 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'displayName', 'role']) &&
+             data.id is string &&
+             data.displayName is string &&
+             data.displayName.size() > 0 &&
+             data.role in ['CUSTOMER', 'SELLER', 'DELIVERY', 'ADMIN'] &&
+             (!('email' in data) || data.email is string) &&
+             (!('phoneNumber' in data) || data.phoneNumber is string) &&
+             (!('address' in data) || data.address is string) &&
+             (!('preferredLanguage' in data) || data.preferredLanguage in ['hi', 'en']) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidShop(data) {
+      return data.keys().hasAll(['id', 'ownerId', 'nameHi', 'nameEn', 'potterNameHi', 'phone', 'fullAddress', 'upiId', 'isApproved']) &&
+             data.id is string &&
+             data.ownerId is string &&
+             data.nameHi is string &&
+             data.nameHi.size() > 0 &&
+             data.nameEn is string &&
+             data.potterNameHi is string &&
+             data.phone is string &&
+             data.fullAddress is string &&
+             data.upiId is string &&
+             data.isApproved is bool &&
+             (!('distanceKm' in data) || data.distanceKm is number) &&
+             (!('rating' in data) || data.rating is number) &&
+             (!('reviewCount' in data) || data.reviewCount is int || data.reviewCount is number) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['id', 'shopId', 'ownerId', 'nameHi', 'nameEn', 'category', 'basePrice', 'stockQuantity']) &&
+             data.id is string &&
+             data.shopId is string &&
+             data.ownerId is string &&
+             data.nameHi is string &&
+             data.nameHi.size() > 0 &&
+             data.nameEn is string &&
+             data.category is string &&
+             data.basePrice is number &&
+             data.basePrice >= 0 &&
+             (data.stockQuantity is int || data.stockQuantity is number) &&
+             data.stockQuantity >= 0 &&
+             (!('originalPrice' in data) || data.originalPrice is number) &&
+             (!('descriptionHi' in data) || data.descriptionHi is string) &&
+             (!('descriptionEn' in data) || data.descriptionEn is string) &&
+             (!('rating' in data) || data.rating is number) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['id', 'orderNumber', 'customerId', 'sellerId', 'shopId', 'subtotal', 'totalAmount', 'status']) &&
+             data.id is string &&
+             data.orderNumber is string &&
+             data.customerId is string &&
+             data.sellerId is string &&
+             data.shopId is string &&
+             data.subtotal is number &&
+             data.subtotal >= 0 &&
+             data.totalAmount is number &&
+             data.totalAmount >= 0 &&
+             data.status in ['PLACED', 'SELLER_ACCEPTED', 'PACKING', 'READY_FOR_PICKUP', 'PARTNER_ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'] &&
+             (!('deliveryFee' in data) || data.deliveryFee is number) &&
+             (!('commissionPercent' in data) || data.commissionPercent is number) &&
+             (!('commissionAmount' in data) || data.commissionAmount is number) &&
+             (!('sellerPayout' in data) || data.sellerPayout is number) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) && request.resource.data.id == userId && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+
+    // Shops Collection (Publicly readable for nearby discovery)
+    match /shops/{shopId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid && isValidShop(request.resource.data);
+      allow update: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || request.auth.token.get('admin', false) == true) && isValidShop(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Products Collection (Publicly readable for pottery marketplace)
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid && isValidProduct(request.resource.data);
+      allow update: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || request.auth.token.get('admin', false) == true) && isValidProduct(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Orders Collection
+    match /orders/{orderId} {
+      allow read: if isAuthenticated() && (resource.data.customerId == request.auth.uid || resource.data.sellerId == request.auth.uid || request.auth.token.get('admin', false) == true);
+      allow create: if isAuthenticated() && request.resource.data.customerId == request.auth.uid && isValidOrder(request.resource.data);
+      allow update: if isAuthenticated() && (resource.data.customerId == request.auth.uid || resource.data.sellerId == request.auth.uid || request.auth.token.get('admin', false) == true) && isValidOrder(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.customerId == request.auth.uid;
+    }
+  }
+}

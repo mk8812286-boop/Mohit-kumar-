@@ -1,0 +1,6 @@
+{
+  "name": "Prajapati Kala",
+  "description": "प्रजापति कला (Prajapati Kala) - मिट्टी की कला, हर घर तक. Complete Multi-Vendor Pottery Marketplace connecting local potters with nearby customers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

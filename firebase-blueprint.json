@@ -1,0 +1,392 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile for customer, potter seller, delivery rider, or admin in Prajapati Kala marketplace",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique user ID matching Firebase Auth UID"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User's full name"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Contact mobile phone number"
+        },
+        "role": {
+          "type": "string",
+          "description": "Role in marketplace: CUSTOMER, SELLER, DELIVERY, ADMIN",
+          "enum": ["CUSTOMER", "SELLER", "DELIVERY", "ADMIN"]
+        },
+        "address": {
+          "type": "string",
+          "description": "Default delivery or workshop address"
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "description": "Preferred language code: hi or en",
+          "enum": ["hi", "en"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when user was created via FieldValue.serverTimestamp()"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when user was last updated via FieldValue.serverTimestamp()"
+        }
+      },
+      "required": ["id", "displayName", "role"]
+    },
+    "Shop": {
+      "title": "Shop",
+      "description": "Registered Kumhar pottery workshop in the marketplace",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique shop identifier"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the potter who owns this shop"
+        },
+        "nameHi": {
+          "type": "string",
+          "description": "Shop name in Hindi"
+        },
+        "nameEn": {
+          "type": "string",
+          "description": "Shop name in English"
+        },
+        "potterNameHi": {
+          "type": "string",
+          "description": "Master potter artisan name in Hindi"
+        },
+        "potterNameEn": {
+          "type": "string",
+          "description": "Master potter artisan name in English"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Potter contact phone number"
+        },
+        "villageCity": {
+          "type": "string",
+          "description": "Village or city locality"
+        },
+        "districtState": {
+          "type": "string",
+          "description": "District and State (e.g. Jaipur, Rajasthan)"
+        },
+        "fullAddress": {
+          "type": "string",
+          "description": "Complete physical workshop address for pickup"
+        },
+        "pinCode": {
+          "type": "string",
+          "description": "Postal PIN code"
+        },
+        "distanceKm": {
+          "type": "number",
+          "description": "Distance in kilometers"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Average customer star rating"
+        },
+        "reviewCount": {
+          "type": "number",
+          "description": "Total review count"
+        },
+        "openingHours": {
+          "type": "string",
+          "description": "Shop opening hours"
+        },
+        "upiId": {
+          "type": "string",
+          "description": "UPI ID for artisan payout settlements"
+        },
+        "bankAccount": {
+          "type": "string",
+          "description": "Bank account reference"
+        },
+        "isApproved": {
+          "type": "boolean",
+          "description": "Whether the shop has been verified and approved by Super Admin"
+        },
+        "specialtyHi": {
+          "type": "string",
+          "description": "Pottery specialty in Hindi"
+        },
+        "specialtyEn": {
+          "type": "string",
+          "description": "Pottery specialty in English"
+        },
+        "yearsExperience": {
+          "type": "number",
+          "description": "Generations or years of pottery experience"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp via FieldValue.serverTimestamp()"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Update timestamp via FieldValue.serverTimestamp()"
+        }
+      },
+      "required": ["id", "ownerId", "nameHi", "nameEn", "potterNameHi", "phone", "fullAddress", "upiId", "isApproved"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Handcrafted pure clay pottery item listed by an artisan",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique pottery product ID"
+        },
+        "shopId": {
+          "type": "string",
+          "description": "ID of the pottery shop listing this item"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the potter artisan who listed this item"
+        },
+        "nameHi": {
+          "type": "string",
+          "description": "Pottery name in Hindi"
+        },
+        "nameEn": {
+          "type": "string",
+          "description": "Pottery name in English"
+        },
+        "descriptionHi": {
+          "type": "string",
+          "description": "Detailed description in Hindi"
+        },
+        "descriptionEn": {
+          "type": "string",
+          "description": "Detailed description in English"
+        },
+        "category": {
+          "type": "string",
+          "description": "Pottery category key: MATKA, KULHAD, HANDI, SURAHI, GAMLA, DIYA, PLATE_BOWL, TAWA, DECORATIVE, PUJA, SPECIAL_ARTISAN, CUSTOM"
+        },
+        "basePrice": {
+          "type": "number",
+          "description": "Base selling price in INR"
+        },
+        "originalPrice": {
+          "type": "number",
+          "description": "MRP before discount in INR"
+        },
+        "shopNameHi": {
+          "type": "string",
+          "description": "Shop name in Hindi"
+        },
+        "shopNameEn": {
+          "type": "string",
+          "description": "Shop name in English"
+        },
+        "potterNameHi": {
+          "type": "string",
+          "description": "Artisan name in Hindi"
+        },
+        "potterNameEn": {
+          "type": "string",
+          "description": "Artisan name in English"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Customer rating"
+        },
+        "reviewCount": {
+          "type": "number",
+          "description": "Number of reviews"
+        },
+        "finishType": {
+          "type": "string",
+          "description": "Finish and texture type of the clay"
+        },
+        "careInstructionsHi": {
+          "type": "string",
+          "description": "Care and first-use instructions in Hindi"
+        },
+        "careInstructionsEn": {
+          "type": "string",
+          "description": "Care and first-use instructions in English"
+        },
+        "stockQuantity": {
+          "type": "number",
+          "description": "Available stock count"
+        },
+        "isCustomAvailable": {
+          "type": "boolean",
+          "description": "Whether custom size or engraving requests are accepted"
+        },
+        "isNaturalClayCertified": {
+          "type": "boolean",
+          "description": "100% natural, chemical-free certification"
+        },
+        "deliveryEstimateDays": {
+          "type": "number",
+          "description": "Estimated delivery time in days"
+        },
+        "deliveryCharge": {
+          "type": "number",
+          "description": "Fragile earthenware delivery charge in INR"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp via FieldValue.serverTimestamp()"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Update timestamp via FieldValue.serverTimestamp()"
+        }
+      },
+      "required": ["id", "shopId", "ownerId", "nameHi", "nameEn", "category", "basePrice", "stockQuantity"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Multi-vendor customer order for handcrafted pottery",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order document identifier"
+        },
+        "orderNumber": {
+          "type": "string",
+          "description": "Customer order number (e.g. PK-1234)"
+        },
+        "customerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of customer"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Name of customer"
+        },
+        "customerPhone": {
+          "type": "string",
+          "description": "Customer contact phone"
+        },
+        "deliveryAddress": {
+          "type": "string",
+          "description": "Delivery address and PIN"
+        },
+        "sellerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of potter seller"
+        },
+        "shopId": {
+          "type": "string",
+          "description": "ID of the pottery workshop fulfilling the order"
+        },
+        "shopName": {
+          "type": "string",
+          "description": "Name of the pottery workshop"
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Pottery items subtotal in INR"
+        },
+        "deliveryFee": {
+          "type": "number",
+          "description": "Fragile clay delivery charge in INR"
+        },
+        "commissionPercent": {
+          "type": "number",
+          "description": "Marketplace platform commission percentage (e.g. 10.0)"
+        },
+        "commissionAmount": {
+          "type": "number",
+          "description": "App owner platform fee amount in INR"
+        },
+        "sellerPayout": {
+          "type": "number",
+          "description": "Net amount earned by potter artisan in INR"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total payable amount in INR"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment mode: UPI, COD, CARD"
+        },
+        "isPaid": {
+          "type": "boolean",
+          "description": "Whether the order is paid"
+        },
+        "status": {
+          "type": "string",
+          "description": "Order lifecycle stage: PLACED, SELLER_ACCEPTED, PACKING, READY_FOR_PICKUP, PARTNER_ASSIGNED, PICKED_UP, OUT_FOR_DELIVERY, DELIVERED, CANCELLED"
+        },
+        "pickupOtp": {
+          "type": "string",
+          "description": "Security OTP for potter-to-rider package handover"
+        },
+        "deliveryOtp": {
+          "type": "string",
+          "description": "Security OTP for rider-to-customer package handover"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp via FieldValue.serverTimestamp()"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Update timestamp via FieldValue.serverTimestamp()"
+        }
+      },
+      "required": ["id", "orderNumber", "customerId", "sellerId", "shopId", "subtotal", "totalAmount", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/User"
+      },
+      "description": "Stores user profiles for customers, potters, riders and admins"
+    },
+    "/shops/{shopId}": {
+      "schema": {
+        "$ref": "#/entities/Shop"
+      },
+      "description": "Stores registered pottery workshops and artisan shops"
+    },
+    "/products/{productId}": {
+      "schema": {
+        "$ref": "#/entities/Product"
+      },
+      "description": "Stores handcrafted pottery products listed by registered artisans"
+    },
+    "/orders/{orderId}": {
+      "schema": {
+        "$ref": "#/entities/Order"
+      },
+      "description": "Stores customer pottery orders with multi-vendor commission and status tracking"
+    }
+  }
+}

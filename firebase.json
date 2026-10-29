@@ -1,0 +1,8 @@
+{
+  "firestore": [
+    {
+      "database": "ai-studio-android-prajapat-a3fffe2d-4ba1-478a-8808-1ccb74076824",
+      "rules": "firestore.rules"
+    }
+  ]
+}
